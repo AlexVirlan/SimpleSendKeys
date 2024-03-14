@@ -1,3 +1,5 @@
+using SimpleSendKeys.Forms;
+
 namespace SimpleSendKeys
 {
     internal static class Program
@@ -8,10 +10,14 @@ namespace SimpleSendKeys
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            Mutex mutex = new Mutex(true, "SimpleSendKeys", out bool newRun);
+            if (!newRun) { return; }
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            frmMain frmMain = new();
+            frmMain.Show();
+            Application.Run();
         }
     }
 }

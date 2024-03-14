@@ -34,9 +34,13 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(26, 26, 26);
             ClientSize = new Size(800, 450);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmMain";
-            Text = "frmMain";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "SimpleSendKeys";
             Load += frmMain_Load;
             ResumeLayout(false);
         }
