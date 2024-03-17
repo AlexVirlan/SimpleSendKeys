@@ -89,6 +89,7 @@ namespace SimpleSendKeys.Forms
             }
             finally
             {
+                if (Variables.ClearCbAfterSending) { Clipboard.Clear(); }
                 _sending = false;
             }
         }
@@ -189,6 +190,11 @@ namespace SimpleSendKeys.Forms
                 Application.DoEvents();
             }
             stopwatch.Stop();
+        }
+
+        private void chkClearCbAfterSending_CheckedChanged(object sender, EventArgs e)
+        {
+            Variables.ClearCbAfterSending = chkClearCbAfterSending.Checked;
         }
     }
 }

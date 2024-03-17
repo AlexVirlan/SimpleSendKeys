@@ -46,6 +46,7 @@
             chkMinimizeToTray = new CheckBox();
             pnlMain = new Panel();
             numBetweenDelay = new NumericUpDown();
+            chkClearCbAfterSending = new CheckBox();
             label5 = new Label();
             chkMask = new CheckBox();
             label4 = new Label();
@@ -199,7 +200,7 @@
             chkMinimizeToTray.Checked = true;
             chkMinimizeToTray.CheckState = CheckState.Checked;
             chkMinimizeToTray.ForeColor = Color.White;
-            chkMinimizeToTray.Location = new Point(23, 256);
+            chkMinimizeToTray.Location = new Point(23, 277);
             chkMinimizeToTray.Name = "chkMinimizeToTray";
             chkMinimizeToTray.Size = new Size(112, 19);
             chkMinimizeToTray.TabIndex = 1;
@@ -213,6 +214,7 @@
             pnlMain.Controls.Add(numBetweenDelay);
             pnlMain.Controls.Add(numBeforeDelay);
             pnlMain.Controls.Add(btnSend);
+            pnlMain.Controls.Add(chkClearCbAfterSending);
             pnlMain.Controls.Add(label5);
             pnlMain.Controls.Add(chkMask);
             pnlMain.Controls.Add(label4);
@@ -224,7 +226,7 @@
             pnlMain.Controls.Add(txtPayload);
             pnlMain.Location = new Point(12, 12);
             pnlMain.Name = "pnlMain";
-            pnlMain.Size = new Size(432, 238);
+            pnlMain.Size = new Size(432, 259);
             pnlMain.TabIndex = 6;
             // 
             // numBetweenDelay
@@ -241,6 +243,20 @@
             numBetweenDelay.TextAlign = HorizontalAlignment.Center;
             numBetweenDelay.Value = new decimal(new int[] { 50, 0, 0, 0 });
             numBetweenDelay.ValueChanged += numBetweenDelay_ValueChanged;
+            // 
+            // chkClearCbAfterSending
+            // 
+            chkClearCbAfterSending.AutoSize = true;
+            chkClearCbAfterSending.Checked = true;
+            chkClearCbAfterSending.CheckState = CheckState.Checked;
+            chkClearCbAfterSending.ForeColor = Color.White;
+            chkClearCbAfterSending.Location = new Point(13, 232);
+            chkClearCbAfterSending.Name = "chkClearCbAfterSending";
+            chkClearCbAfterSending.Size = new Size(198, 19);
+            chkClearCbAfterSending.TabIndex = 1;
+            chkClearCbAfterSending.Text = "Clear the clipboard after sending";
+            chkClearCbAfterSending.UseVisualStyleBackColor = true;
+            chkClearCbAfterSending.CheckedChanged += chkClearCbAfterSending_CheckedChanged;
             // 
             // label5
             // 
@@ -278,7 +294,7 @@
             // 
             // lblStatus
             // 
-            lblStatus.Location = new Point(141, 257);
+            lblStatus.Location = new Point(141, 278);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(303, 16);
             lblStatus.TabIndex = 7;
@@ -290,7 +306,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(26, 26, 26);
-            ClientSize = new Size(457, 282);
+            ClientSize = new Size(457, 303);
             Controls.Add(lblStatus);
             Controls.Add(pnlMain);
             Controls.Add(chkMinimizeToTray);
@@ -335,5 +351,6 @@
         private Label label5;
         private Label label4;
         private Label lblStatus;
+        private CheckBox chkClearCbAfterSending;
     }
 }

@@ -8,6 +8,7 @@ namespace SimpleSendKeys.Entities
 {
     public static class Variables
     {
+        public static bool ClearCbAfterSending = false;
         public static bool MinimizeToTray = true;
     }
 }
