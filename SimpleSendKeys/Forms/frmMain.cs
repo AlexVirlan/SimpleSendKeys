@@ -40,7 +40,7 @@ namespace SimpleSendKeys.Forms
             {
                 Keys loggedKey = e.KeyboardData.Key;
                 int loggedVkCode = e.KeyboardData.VirtualCode;
-                // log/use the key
+
                 switch (e.KeyboardData.Key)
                 {
                     case Keys.Insert:
@@ -49,7 +49,7 @@ namespace SimpleSendKeys.Forms
                         break;
 
                     case Keys.Escape:
-
+                        // TO DO
                         break;
                 }
             }
@@ -59,18 +59,25 @@ namespace SimpleSendKeys.Forms
         {
             try
             {
-                Stopwatch sw = new Stopwatch();
                 _sending = true;
                 foreach (char c in text)
                 {
-                    if (c == ' ') { SendKeys.SendWait(" "); }
-                    else if (c == '\r' || c == '\n') { SendKeys.SendWait("{ENTER}"); }
-                    else
+                    switch (c)
                     {
-                        sw.Start();
-                        SendKeys.SendWait($"{{{c}}}");
-                        sw.Stop();
-                        this.Text += sw.ElapsedMilliseconds + "; ";
+                        case ' ':
+                            SendKeys.SendWait(" ");
+                            break;
+
+                        case '\r':
+                            continue;
+
+                        case '\n':
+                            SendKeys.SendWait("{ENTER}");
+                            break;
+
+                        default:
+                            SendKeys.SendWait($"{{{c}}}");
+                            break;
                     }
                     Thread.Sleep(charDelay);
                 }
@@ -128,7 +135,7 @@ namespace SimpleSendKeys.Forms
         {
             if (txtPayload.Text.INOE())
             { ShowMessage("The text payload is empty.", MessageBoxIcon.Warning); }
-            Sleep((int)numBeforeDelay.Value);
+            Sleep((int)numBeforeDelay.Value * 1000);
             SendPayload(txtPayload.Text, (int)numBetweenDelay.Value);
         }
 
@@ -145,7 +152,7 @@ namespace SimpleSendKeys.Forms
         private void SetSendText()
         {
             int txtLength = txtPayload.Text.Length;
-            double duration = Convert.ToDouble(txtLength * numBetweenDelay.Value);
+            double duration = Convert.ToDouble((txtLength * 100) + (txtLength * numBetweenDelay.Value));
             string durStr = duration < 1000d ? $"{duration} ms" : $"{Math.Round(duration / 1000d, 2, MidpointRounding.AwayFromZero)} sec.";
             btnSend.Text = $"Send {txtLength} characters{_NL}(in {durStr})";
         }
