@@ -52,6 +52,7 @@
             label4 = new Label();
             tmrCbSync = new System.Windows.Forms.Timer(components);
             lblStatus = new Label();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)numBeforeDelay).BeginInit();
             trayContextMenu.SuspendLayout();
             pnlMain.SuspendLayout();
@@ -301,12 +302,22 @@
             lblStatus.Text = "Idle";
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // comboBox1
+            // 
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(490, 120);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(147, 23);
+            comboBox1.TabIndex = 8;
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(26, 26, 26);
-            ClientSize = new Size(457, 303);
+            ClientSize = new Size(693, 303);
+            Controls.Add(comboBox1);
             Controls.Add(lblStatus);
             Controls.Add(pnlMain);
             Controls.Add(chkMinimizeToTray);
@@ -352,5 +363,6 @@
         private Label label4;
         private Label lblStatus;
         private CheckBox chkClearCbAfterSending;
+        private ComboBox comboBox1;
     }
 }

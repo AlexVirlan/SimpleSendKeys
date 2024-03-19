@@ -1,5 +1,6 @@
 ﻿using SimpleSendKeys.Entities;
 using SimpleSendKeys.Utils;
+using SimpleSendKeys.Utils.KeyboardHook;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +20,10 @@ namespace SimpleSendKeys.Forms
         private bool _sending = false;
         private string _appTitle = "Simple Send Keys";
         private string _NL = Environment.NewLine;
-        private GlobalKeyboardHook _globalKeyboardHook;
+        private KeyboardHookManager _keyboardHookManager;
+        private Action _kbStartAction;
+        private Action _kbStopAction;
+        //private GlobalKeyboardHook _globalKeyboardHook;
         #endregion
 
         public frmMain()
@@ -29,30 +33,71 @@ namespace SimpleSendKeys.Forms
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            //_globalKeyboardHook = new GlobalKeyboardHook();
-            _globalKeyboardHook = new GlobalKeyboardHook(new Keys[] { Keys.Insert, Keys.Escape });
-            _globalKeyboardHook.KeyboardPressed += OnKeyPressed;
+            _kbStartAction = () => OnKbStart();
+            _kbStopAction = () => OnKbStop();
+
+            _keyboardHookManager = new KeyboardHookManager();
+            _keyboardHookManager.Start();
+
+            _keyboardHookManager.RegisterHotkey(0x60, _kbStartAction);
+            _keyboardHookManager.RegisterHotkey(0x61, _kbStopAction);
         }
 
-        private void OnKeyPressed(object sender, GlobalKeyboardHookEventArgs e)
+        private void OnKbStart()
         {
-            if (e.KeyboardState == GlobalKeyboardHook.KeyboardState.KeyDown)
-            {
-                Keys loggedKey = e.KeyboardData.Key;
-                int loggedVkCode = e.KeyboardData.VirtualCode;
+            if (_sending || txtPayload.Text.INOE()) { return; }
+            Sleep(120);
+            SendPayload(txtPayload.Text, (int)numBetweenDelay.Value);
+        }
 
-                switch (e.KeyboardData.Key)
-                {
-                    case Keys.Insert:
-                        if (_sending || txtPayload.Text.INOE()) { return; }
-                        SendPayload(txtPayload.Text, (int)numBetweenDelay.Value);
-                        break;
+        private void OnKbStop()
+        {
 
-                    case Keys.Escape:
-                        // TO DO
-                        break;
-                }
-            }
+        }
+
+        private void OnKeyPressed(object sender)//, GlobalKeyboardHookEventArgs e)
+        {
+
+            // (!GlobalKeyboardHook.RegisteredKeys.Contains(e.KeyboardData.Key)) { return; }
+
+            // seems, not needed in the life.
+            //if (e.KeyboardState == GlobalKeyboardHook.KeyboardState.SysKeyDown &&
+            //    e.KeyboardData.Flags == GlobalKeyboardHook.LlkhfAltdown)
+            //{
+            //    MessageBox.Show("Alt + Print Screen");
+            //    e.Handled = true;
+            //}
+            //else
+
+            //if (e.KeyboardState == GlobalKeyboardHook.KeyboardState.KeyDown)
+            //{
+            //    MessageBox.Show("Print Screen");
+            //    e.Handled = true;
+            //}
+
+            //txtPayload.Text += _NL + e.KeyboardData.Key.ToString() +_NL + e.KeyboardData.Flags + _NL;
+
+
+            return;
+
+            //if (e.KeyboardState == GlobalKeyboardHook.KeyboardState.KeyDown)
+            //{
+            //    Keys loggedKey = e.KeyboardData.Key;
+            //    int loggedVkCode = e.KeyboardData.VirtualCode;
+
+            //    switch (e.KeyboardData.Key)
+            //    {
+            //        case Keys.Insert:
+            //            if (_sending || txtPayload.Text.INOE()) { return; }
+            //            Sleep(120);
+            //            SendPayload(txtPayload.Text, (int)numBetweenDelay.Value);
+            //            break;
+
+            //        case Keys.Escape:
+            //            // TO DO
+            //            break;
+            //    }
+            //}
         }
 
         private void SendPayload(string text, int charDelay)
