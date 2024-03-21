@@ -20,10 +20,10 @@ namespace SimpleSendKeys.Forms
         private bool _sending = false;
         private string _appTitle = "Simple Send Keys";
         private string _NL = Environment.NewLine;
-        private KeyboardHookManager _keyboardHookManager;
         private Action _kbStartAction;
         private Action _kbStopAction;
-        //private GlobalKeyboardHook _globalKeyboardHook;
+        private KeyboardHookManager _keyboardHookManager;
+        private Guid _startHkGuid;
         #endregion
 
         public frmMain()
@@ -39,7 +39,7 @@ namespace SimpleSendKeys.Forms
             _keyboardHookManager = new KeyboardHookManager();
             _keyboardHookManager.Start();
 
-            _keyboardHookManager.RegisterHotkey(0x60, _kbStartAction);
+            _startHkGuid = _keyboardHookManager.RegisterHotkey(0x60, _kbStartAction);
             _keyboardHookManager.RegisterHotkey(0x61, _kbStopAction);
         }
 
