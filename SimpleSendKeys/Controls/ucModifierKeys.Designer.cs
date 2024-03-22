@@ -33,25 +33,33 @@
             chkControl = new CheckBox();
             chkShift = new CheckBox();
             chkWin = new CheckBox();
+            pnlMain = new Panel();
+            pnlControls = new Panel();
+            pnlMain.SuspendLayout();
+            pnlControls.SuspendLayout();
             SuspendLayout();
             // 
             // lblInfo
             // 
-            lblInfo.AutoSize = true;
-            lblInfo.Location = new Point(33, 34);
+            lblInfo.Cursor = Cursors.Hand;
+            lblInfo.ForeColor = Color.White;
+            lblInfo.Location = new Point(2, 2);
             lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(12, 15);
+            lblInfo.Size = new Size(113, 15);
             lblInfo.TabIndex = 0;
-            lblInfo.Text = "-";
+            lblInfo.Text = "Alt, Ctrl, Shift, Win";
+            lblInfo.TextAlign = ContentAlignment.MiddleCenter;
+            lblInfo.Click += lblInfo_Click;
             // 
             // chkAlt
             // 
             chkAlt.AutoSize = true;
-            chkAlt.Location = new Point(33, 71);
+            chkAlt.ForeColor = Color.White;
+            chkAlt.Location = new Point(6, 5);
             chkAlt.Name = "chkAlt";
             chkAlt.Size = new Size(41, 19);
-            chkAlt.TabIndex = 1;
-            chkAlt.Tag = "1";
+            chkAlt.TabIndex = 0;
+            chkAlt.Tag = "Alt";
             chkAlt.Text = "Alt";
             chkAlt.UseVisualStyleBackColor = true;
             chkAlt.CheckedChanged += CheckboxChanged;
@@ -59,11 +67,12 @@
             // chkControl
             // 
             chkControl.AutoSize = true;
-            chkControl.Location = new Point(33, 96);
+            chkControl.ForeColor = Color.White;
+            chkControl.Location = new Point(6, 30);
             chkControl.Name = "chkControl";
             chkControl.Size = new Size(45, 19);
             chkControl.TabIndex = 1;
-            chkControl.Tag = "2";
+            chkControl.Tag = "Ctrl";
             chkControl.Text = "Ctrl";
             chkControl.UseVisualStyleBackColor = true;
             chkControl.CheckedChanged += CheckboxChanged;
@@ -71,11 +80,12 @@
             // chkShift
             // 
             chkShift.AutoSize = true;
-            chkShift.Location = new Point(96, 71);
+            chkShift.ForeColor = Color.White;
+            chkShift.Location = new Point(66, 5);
             chkShift.Name = "chkShift";
             chkShift.Size = new Size(50, 19);
-            chkShift.TabIndex = 1;
-            chkShift.Tag = "4";
+            chkShift.TabIndex = 2;
+            chkShift.Tag = "Shift";
             chkShift.Text = "Shift";
             chkShift.UseVisualStyleBackColor = true;
             chkShift.CheckedChanged += CheckboxChanged;
@@ -83,29 +93,52 @@
             // chkWin
             // 
             chkWin.AutoSize = true;
-            chkWin.Location = new Point(96, 96);
+            chkWin.ForeColor = Color.White;
+            chkWin.Location = new Point(66, 30);
             chkWin.Name = "chkWin";
             chkWin.Size = new Size(47, 19);
-            chkWin.TabIndex = 1;
-            chkWin.Tag = "8";
+            chkWin.TabIndex = 3;
+            chkWin.Tag = "Win";
             chkWin.Text = "Win";
             chkWin.UseVisualStyleBackColor = true;
             chkWin.CheckedChanged += CheckboxChanged;
+            // 
+            // pnlMain
+            // 
+            pnlMain.BorderStyle = BorderStyle.FixedSingle;
+            pnlMain.Controls.Add(lblInfo);
+            pnlMain.Location = new Point(0, 0);
+            pnlMain.Name = "pnlMain";
+            pnlMain.Size = new Size(119, 21);
+            pnlMain.TabIndex = 2;
+            // 
+            // pnlControls
+            // 
+            pnlControls.BorderStyle = BorderStyle.FixedSingle;
+            pnlControls.Controls.Add(chkAlt);
+            pnlControls.Controls.Add(chkControl);
+            pnlControls.Controls.Add(chkWin);
+            pnlControls.Controls.Add(chkShift);
+            pnlControls.Location = new Point(0, 21);
+            pnlControls.Name = "pnlControls";
+            pnlControls.Size = new Size(119, 54);
+            pnlControls.TabIndex = 3;
             // 
             // ucModifierKeys
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(chkWin);
-            Controls.Add(chkShift);
-            Controls.Add(chkControl);
-            Controls.Add(chkAlt);
-            Controls.Add(lblInfo);
+            BackColor = Color.FromArgb(26, 26, 26);
+            Controls.Add(pnlControls);
+            Controls.Add(pnlMain);
             Name = "ucModifierKeys";
-            Size = new Size(339, 172);
+            Size = new Size(119, 21);
             Load += ucModifierKeys_Load;
+            Leave += ucModifierKeys_Leave;
+            pnlMain.ResumeLayout(false);
+            pnlControls.ResumeLayout(false);
+            pnlControls.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -115,5 +148,7 @@
         private CheckBox chkControl;
         private CheckBox chkShift;
         private CheckBox chkWin;
+        private Panel pnlMain;
+        private Panel pnlControls;
     }
 }

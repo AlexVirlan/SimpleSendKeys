@@ -39,6 +39,7 @@
             numBeforeDelay = new NumericUpDown();
             label3 = new Label();
             toolTips = new ToolTip(components);
+            ucModifierKeys = new Controls.ucModifierKeys();
             trayIcon = new NotifyIcon(components);
             trayContextMenu = new ContextMenuStrip(components);
             showToolStripMenuItem = new ToolStripMenuItem();
@@ -52,10 +53,14 @@
             label4 = new Label();
             tmrCbSync = new System.Windows.Forms.Timer(components);
             lblStatus = new Label();
+            pnkHotKey = new Panel();
+            label6 = new Label();
+            label7 = new Label();
             ((System.ComponentModel.ISupportInitialize)numBeforeDelay).BeginInit();
             trayContextMenu.SuspendLayout();
             pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numBetweenDelay).BeginInit();
+            pnkHotKey.SuspendLayout();
             SuspendLayout();
             // 
             // txtPayload
@@ -163,6 +168,16 @@
             toolTips.ToolTipIcon = ToolTipIcon.Info;
             toolTips.ToolTipTitle = "Info";
             // 
+            // ucModifierKeys
+            // 
+            ucModifierKeys.BackColor = Color.FromArgb(26, 26, 26);
+            ucModifierKeys.Location = new Point(65, 20);
+            ucModifierKeys.Name = "ucModifierKeys";
+            ucModifierKeys.Size = new Size(119, 21);
+            ucModifierKeys.SortModifiers = true;
+            ucModifierKeys.TabIndex = 8;
+            toolTips.SetToolTip(ucModifierKeys, "Click to set the modifier keys.");
+            // 
             // trayIcon
             // 
             trayIcon.BalloonTipIcon = ToolTipIcon.Info;
@@ -200,7 +215,7 @@
             chkMinimizeToTray.Checked = true;
             chkMinimizeToTray.CheckState = CheckState.Checked;
             chkMinimizeToTray.ForeColor = Color.White;
-            chkMinimizeToTray.Location = new Point(23, 277);
+            chkMinimizeToTray.Location = new Point(23, 323);
             chkMinimizeToTray.Name = "chkMinimizeToTray";
             chkMinimizeToTray.Size = new Size(112, 19);
             chkMinimizeToTray.TabIndex = 1;
@@ -224,7 +239,7 @@
             pnlMain.Controls.Add(lblPaste);
             pnlMain.Controls.Add(chkClipboardSync);
             pnlMain.Controls.Add(txtPayload);
-            pnlMain.Location = new Point(12, 12);
+            pnlMain.Location = new Point(12, 58);
             pnlMain.Name = "pnlMain";
             pnlMain.Size = new Size(432, 259);
             pnlMain.TabIndex = 6;
@@ -294,19 +309,49 @@
             // 
             // lblStatus
             // 
-            lblStatus.Location = new Point(141, 278);
+            lblStatus.Location = new Point(141, 324);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(303, 16);
             lblStatus.TabIndex = 7;
             lblStatus.Text = "Idle";
             lblStatus.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // pnkHotKey
+            // 
+            pnkHotKey.BorderStyle = BorderStyle.FixedSingle;
+            pnkHotKey.Controls.Add(label7);
+            pnkHotKey.Controls.Add(label6);
+            pnkHotKey.Location = new Point(12, 12);
+            pnkHotKey.Name = "pnkHotKey";
+            pnkHotKey.Size = new Size(432, 37);
+            pnkHotKey.TabIndex = 9;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(3, 9);
+            label6.Name = "label6";
+            label6.Size = new Size(48, 15);
+            label6.TabIndex = 9;
+            label6.Text = "Hotkey:";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(174, 9);
+            label7.Name = "label7";
+            label7.Size = new Size(15, 15);
+            label7.TabIndex = 9;
+            label7.Text = "+";
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(26, 26, 26);
-            ClientSize = new Size(693, 303);
+            ClientSize = new Size(456, 349);
+            Controls.Add(ucModifierKeys);
+            Controls.Add(pnkHotKey);
             Controls.Add(lblStatus);
             Controls.Add(pnlMain);
             Controls.Add(chkMinimizeToTray);
@@ -324,6 +369,8 @@
             pnlMain.ResumeLayout(false);
             pnlMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numBetweenDelay).EndInit();
+            pnkHotKey.ResumeLayout(false);
+            pnkHotKey.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -352,5 +399,9 @@
         private Label label4;
         private Label lblStatus;
         private CheckBox chkClearCbAfterSending;
+        private Controls.ucModifierKeys ucModifierKeys;
+        private Panel pnkHotKey;
+        private Label label6;
+        private Label label7;
     }
 }
