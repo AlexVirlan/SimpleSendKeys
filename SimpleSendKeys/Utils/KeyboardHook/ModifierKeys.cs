@@ -10,9 +10,9 @@ namespace SimpleSendKeys.Utils.KeyboardHook
     public enum ModifierKeys
     {
         Alt = 1,
-        Control = 2,
+        Ctrl = 2,
         Shift = 4,
-        WindowsKey = 8,
+        Win = 8,
     }
 
     public static class ModifierKeysUtilities
@@ -29,7 +29,7 @@ namespace SimpleSendKeys.Utils.KeyboardHook
                 case 0xA2:
                 case 0xA3:
                 case 0x11:
-                    return ModifierKeys.Control;
+                    return ModifierKeys.Ctrl;
 
                 case 0x12:
                 case 0xA4:
@@ -38,7 +38,7 @@ namespace SimpleSendKeys.Utils.KeyboardHook
 
                 case 0x5B:
                 case 0x5C:
-                    return ModifierKeys.WindowsKey;
+                    return ModifierKeys.Win;
 
                 default:
                     return null;

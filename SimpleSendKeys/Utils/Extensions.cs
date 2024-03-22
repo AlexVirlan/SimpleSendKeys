@@ -11,5 +11,9 @@ namespace SimpleSendKeys.Utils
         #region String
         public static bool INOE(this string str) => string.IsNullOrEmpty(str);
         #endregion
+
+        #region Bool
+        public static bool Invert(ref this bool @bool) => @bool = !@bool;
+        #endregion
     }
 }
