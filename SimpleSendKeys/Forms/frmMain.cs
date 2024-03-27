@@ -41,6 +41,8 @@ namespace SimpleSendKeys.Forms
 
             _startHkGuid = _keyboardHookManager.RegisterHotkey(0x60, _kbStartAction);
             _keyboardHookManager.RegisterHotkey(0x61, _kbStopAction);
+
+            ucModifierKeys.ModifiersUpdated += OnModifierKeysUpdated;
         }
 
         private void OnKbStart()
@@ -53,6 +55,12 @@ namespace SimpleSendKeys.Forms
         private void OnKbStop()
         {
 
+        }
+
+        private void OnModifierKeysUpdated(object? sender, List<ModifierKeys> modifiers)
+        {
+            _keyboardHookManager.UnregisterHotkey(_startHkGuid);
+            _keyboardHookManager.RegisterHotkey(modifiers.ToArray(), 0x60, _kbStartAction);
         }
 
         private void OnKeyPressed(object sender)//, GlobalKeyboardHookEventArgs e)

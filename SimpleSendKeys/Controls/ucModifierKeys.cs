@@ -17,6 +17,8 @@ namespace SimpleSendKeys.Controls
 
         [Description("Whether to sort the modifiers or not"), Category("Appearance")]
         public bool SortModifiers { get; set; } = true;
+
+        public event EventHandler<List<ModifierKeys>>? ModifiersUpdated;
         #endregion
         #endregion
 
@@ -43,6 +45,7 @@ namespace SimpleSendKeys.Controls
                 if (checkBox.Checked) { Modifiers.Add(modifierKeys); }
                 else { Modifiers.Remove(modifierKeys); }
                 if (SortModifiers) { Modifiers.Sort(); }
+                ModifiersUpdated?.Invoke(this, Modifiers);
             }
             UpdateUI();
         }
@@ -71,4 +74,9 @@ namespace SimpleSendKeys.Controls
             _extended.Invert();
         }
     }
+
+    //public class ModifiersEventArgs : EventArgs
+    //{
+    //    public List<ModifierKeys>? Modifiers { get; private set; }
+    //}
 }
