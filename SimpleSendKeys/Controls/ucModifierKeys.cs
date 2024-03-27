@@ -74,9 +74,4 @@ namespace SimpleSendKeys.Controls
             _extended.Invert();
         }
     }
-
-    //public class ModifiersEventArgs : EventArgs
-    //{
-    //    public List<ModifierKeys>? Modifiers { get; private set; }
-    //}
 }
