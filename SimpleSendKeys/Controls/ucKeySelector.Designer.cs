@@ -28,45 +28,64 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             lblInfo = new Label();
-            panel1 = new Panel();
+            pnlMain = new Panel();
+            toolTips = new ToolTip(components);
+            pnlMain.SuspendLayout();
             SuspendLayout();
             // 
             // lblInfo
             // 
-            lblInfo.AutoSize = true;
             lblInfo.Cursor = Cursors.Hand;
-            lblInfo.Location = new Point(45, 63);
+            lblInfo.Dock = DockStyle.Fill;
+            lblInfo.Location = new Point(0, 0);
             lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(38, 15);
+            lblInfo.Size = new Size(88, 19);
             lblInfo.TabIndex = 0;
-            lblInfo.Text = "label1";
+            lblInfo.Text = "-";
+            lblInfo.TextAlign = ContentAlignment.MiddleCenter;
+            toolTips.SetToolTip(lblInfo, "Click then press a single key to set the global hotkey.\r\nClick again (or anywhere else on the window) to cancel.");
+            lblInfo.Click += lblInfo_Click;
+            lblInfo.PreviewKeyDown += lblInfo_PreviewKeyDown;
             // 
-            // panel1
+            // pnlMain
             // 
-            panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Location = new Point(39, 19);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(78, 27);
-            panel1.TabIndex = 1;
+            pnlMain.BorderStyle = BorderStyle.FixedSingle;
+            pnlMain.Controls.Add(lblInfo);
+            pnlMain.Location = new Point(0, 0);
+            pnlMain.Name = "pnlMain";
+            pnlMain.Size = new Size(90, 21);
+            pnlMain.TabIndex = 1;
+            // 
+            // toolTips
+            // 
+            toolTips.AutomaticDelay = 26;
+            toolTips.AutoPopDelay = 12000;
+            toolTips.InitialDelay = 260;
+            toolTips.ReshowDelay = 100;
+            toolTips.ToolTipIcon = ToolTipIcon.Info;
+            toolTips.ToolTipTitle = "Info";
             // 
             // ucKeySelector
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(26, 26, 26);
-            Controls.Add(panel1);
-            Controls.Add(lblInfo);
+            Controls.Add(pnlMain);
             ForeColor = Color.White;
             Name = "ucKeySelector";
+            Size = new Size(90, 21);
             Load += ucKeySelector_Load;
+            Leave += ucKeySelector_Leave;
+            pnlMain.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private Label lblInfo;
-        private Panel panel1;
+        private Panel pnlMain;
+        private ToolTip toolTips;
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             lblInfo = new Label();
             chkAlt = new CheckBox();
             chkControl = new CheckBox();
@@ -35,6 +36,7 @@
             chkWin = new CheckBox();
             pnlMain = new Panel();
             pnlControls = new Panel();
+            toolTips = new ToolTip(components);
             pnlMain.SuspendLayout();
             pnlControls.SuspendLayout();
             SuspendLayout();
@@ -50,6 +52,7 @@
             lblInfo.TabIndex = 0;
             lblInfo.Text = "Alt, Ctrl, Shift, Win";
             lblInfo.TextAlign = ContentAlignment.MiddleCenter;
+            toolTips.SetToolTip(lblInfo, "Click to set the modifier keys.");
             lblInfo.Click += lblInfo_Click;
             // 
             // chkAlt
@@ -125,6 +128,15 @@
             pnlControls.Size = new Size(119, 54);
             pnlControls.TabIndex = 3;
             // 
+            // toolTips
+            // 
+            toolTips.AutomaticDelay = 26;
+            toolTips.AutoPopDelay = 12000;
+            toolTips.InitialDelay = 260;
+            toolTips.ReshowDelay = 100;
+            toolTips.ToolTipIcon = ToolTipIcon.Info;
+            toolTips.ToolTipTitle = "Info";
+            // 
             // ucModifierKeys
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -151,5 +163,6 @@
         private CheckBox chkWin;
         private Panel pnlMain;
         private Panel pnlControls;
+        private ToolTip toolTips;
     }
 }
