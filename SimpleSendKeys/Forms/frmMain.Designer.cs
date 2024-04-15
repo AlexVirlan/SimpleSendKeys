@@ -54,8 +54,9 @@
             tmrCbSync = new System.Windows.Forms.Timer(components);
             lblStatus = new Label();
             pnkHotKey = new Panel();
-            label6 = new Label();
+            ucKeySelector = new Controls.ucKeySelector();
             label7 = new Label();
+            label6 = new Label();
             ((System.ComponentModel.ISupportInitialize)numBeforeDelay).BeginInit();
             trayContextMenu.SuspendLayout();
             pnlMain.SuspendLayout();
@@ -176,7 +177,6 @@
             ucModifierKeys.Size = new Size(119, 21);
             ucModifierKeys.SortModifiers = true;
             ucModifierKeys.TabIndex = 8;
-            toolTips.SetToolTip(ucModifierKeys, "Click to set the modifier keys.");
             // 
             // trayIcon
             // 
@@ -319,6 +319,7 @@
             // pnkHotKey
             // 
             pnkHotKey.BorderStyle = BorderStyle.FixedSingle;
+            pnkHotKey.Controls.Add(ucKeySelector);
             pnkHotKey.Controls.Add(label7);
             pnkHotKey.Controls.Add(label6);
             pnkHotKey.Location = new Point(12, 12);
@@ -326,14 +327,14 @@
             pnkHotKey.Size = new Size(432, 37);
             pnkHotKey.TabIndex = 9;
             // 
-            // label6
+            // ucKeySelector
             // 
-            label6.AutoSize = true;
-            label6.Location = new Point(3, 9);
-            label6.Name = "label6";
-            label6.Size = new Size(48, 15);
-            label6.TabIndex = 9;
-            label6.Text = "Hotkey:";
+            ucKeySelector.BackColor = Color.FromArgb(26, 26, 26);
+            ucKeySelector.ForeColor = Color.White;
+            ucKeySelector.Location = new Point(190, 7);
+            ucKeySelector.Name = "ucKeySelector";
+            ucKeySelector.Size = new Size(80, 21);
+            ucKeySelector.TabIndex = 10;
             // 
             // label7
             // 
@@ -343,6 +344,15 @@
             label7.Size = new Size(15, 15);
             label7.TabIndex = 9;
             label7.Text = "+";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(3, 9);
+            label6.Name = "label6";
+            label6.Size = new Size(48, 15);
+            label6.TabIndex = 9;
+            label6.Text = "Hotkey:";
             // 
             // frmMain
             // 
@@ -403,5 +413,6 @@
         private Panel pnkHotKey;
         private Label label6;
         private Label label7;
+        private Controls.ucKeySelector ucKeySelector;
     }
 }
