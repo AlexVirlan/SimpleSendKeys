@@ -12,10 +12,10 @@ namespace SimpleSendKeys.Controls
         #endregion
 
         #region Public
-        [Description("The modifiers list"), Category("Data")]
+        [Description("The modifiers list."), Category("Data")]
         public List<ModifierKeys> Modifiers { get; private set; }
 
-        [Description("Whether to sort the modifiers or not"), Category("Appearance")]
+        [Description("Whether to sort the modifiers or not."), Category("Appearance")]
         public bool SortModifiers { get; set; } = true;
 
         public event EventHandler<List<ModifierKeys>>? ModifiersUpdated;

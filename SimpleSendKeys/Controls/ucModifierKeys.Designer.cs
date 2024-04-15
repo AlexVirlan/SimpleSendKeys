@@ -42,10 +42,11 @@
             // lblInfo
             // 
             lblInfo.Cursor = Cursors.Hand;
+            lblInfo.Dock = DockStyle.Fill;
             lblInfo.ForeColor = Color.White;
-            lblInfo.Location = new Point(2, 2);
+            lblInfo.Location = new Point(0, 0);
             lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(113, 15);
+            lblInfo.Size = new Size(117, 19);
             lblInfo.TabIndex = 0;
             lblInfo.Text = "Alt, Ctrl, Shift, Win";
             lblInfo.TextAlign = ContentAlignment.MiddleCenter;
