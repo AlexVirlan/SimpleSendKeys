@@ -22,12 +22,24 @@ namespace SimpleSendKeys.Controls
         #endregion
         #endregion
 
+        #region Constructor
         public ucModifierKeys()
         {
             InitializeComponent();
             Modifiers = new List<ModifierKeys>();
         }
+        #endregion
 
+        #region Public methods
+        public void Reset(bool invokeEventHandler = true)
+        {
+            Modifiers = new List<ModifierKeys>();
+            UpdateUI();
+            if (invokeEventHandler) { ModifiersUpdated?.Invoke(this, Modifiers); }
+        }
+        #endregion
+
+        #region Private methods
         private void ucModifierKeys_Load(object sender, EventArgs e)
         {
             lblInfo.Text = "-";
@@ -73,5 +85,6 @@ namespace SimpleSendKeys.Controls
             else { this.Height = 75; this.Focus(); }
             _extended.Invert();
         }
+        #endregion
     }
 }

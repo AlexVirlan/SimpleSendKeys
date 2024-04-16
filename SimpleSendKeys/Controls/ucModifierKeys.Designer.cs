@@ -48,7 +48,7 @@
             lblInfo.ForeColor = Color.White;
             lblInfo.Location = new Point(0, 0);
             lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(117, 19);
+            lblInfo.Size = new Size(118, 19);
             lblInfo.TabIndex = 0;
             lblInfo.Text = "Alt, Ctrl, Shift, Win";
             lblInfo.TextAlign = ContentAlignment.MiddleCenter;
@@ -113,7 +113,7 @@
             pnlMain.Controls.Add(lblInfo);
             pnlMain.Location = new Point(0, 0);
             pnlMain.Name = "pnlMain";
-            pnlMain.Size = new Size(119, 21);
+            pnlMain.Size = new Size(120, 21);
             pnlMain.TabIndex = 2;
             // 
             // pnlControls
@@ -125,7 +125,7 @@
             pnlControls.Controls.Add(chkShift);
             pnlControls.Location = new Point(0, 21);
             pnlControls.Name = "pnlControls";
-            pnlControls.Size = new Size(119, 54);
+            pnlControls.Size = new Size(120, 54);
             pnlControls.TabIndex = 3;
             // 
             // toolTips
@@ -145,7 +145,7 @@
             Controls.Add(pnlControls);
             Controls.Add(pnlMain);
             Name = "ucModifierKeys";
-            Size = new Size(119, 21);
+            Size = new Size(120, 21);
             Load += ucModifierKeys_Load;
             Leave += ucModifierKeys_Leave;
             pnlMain.ResumeLayout(false);

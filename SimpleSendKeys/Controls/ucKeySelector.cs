@@ -26,11 +26,24 @@ namespace SimpleSendKeys.Controls
         #endregion
         #endregion
 
+        #region Constructor
         public ucKeySelector()
         {
             InitializeComponent();
+            VirtualKeyCode = 45;
         }
+        #endregion
 
+        #region Public methods
+        public void Reset(bool invokeEventHandler = true)
+        {
+            VirtualKeyCode = 45;
+            UpdateUI();
+            if (invokeEventHandler) { KeyUpdated?.Invoke(this, VirtualKeyCode); }
+        }
+        #endregion
+
+        #region Private methods
         private void ucKeySelector_Load(object sender, EventArgs e)
         {
             lblInfo.Text = "-";
@@ -83,5 +96,6 @@ namespace SimpleSendKeys.Controls
             _waitingForKey = false;
             UpdateUI();
         }
+        #endregion
     }
 }
