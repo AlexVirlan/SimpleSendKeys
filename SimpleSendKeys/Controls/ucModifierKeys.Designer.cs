@@ -31,7 +31,7 @@
             components = new System.ComponentModel.Container();
             lblInfo = new Label();
             chkAlt = new CheckBox();
-            chkControl = new CheckBox();
+            chkCtrl = new CheckBox();
             chkShift = new CheckBox();
             chkWin = new CheckBox();
             pnlMain = new Panel();
@@ -68,18 +68,18 @@
             chkAlt.UseVisualStyleBackColor = true;
             chkAlt.CheckedChanged += CheckboxChanged;
             // 
-            // chkControl
+            // chkCtrl
             // 
-            chkControl.AutoSize = true;
-            chkControl.ForeColor = Color.White;
-            chkControl.Location = new Point(6, 30);
-            chkControl.Name = "chkControl";
-            chkControl.Size = new Size(45, 19);
-            chkControl.TabIndex = 1;
-            chkControl.Tag = "Ctrl";
-            chkControl.Text = "Ctrl";
-            chkControl.UseVisualStyleBackColor = true;
-            chkControl.CheckedChanged += CheckboxChanged;
+            chkCtrl.AutoSize = true;
+            chkCtrl.ForeColor = Color.White;
+            chkCtrl.Location = new Point(6, 30);
+            chkCtrl.Name = "chkCtrl";
+            chkCtrl.Size = new Size(45, 19);
+            chkCtrl.TabIndex = 1;
+            chkCtrl.Tag = "Ctrl";
+            chkCtrl.Text = "Ctrl";
+            chkCtrl.UseVisualStyleBackColor = true;
+            chkCtrl.CheckedChanged += CheckboxChanged;
             // 
             // chkShift
             // 
@@ -120,7 +120,7 @@
             // 
             pnlControls.BorderStyle = BorderStyle.FixedSingle;
             pnlControls.Controls.Add(chkAlt);
-            pnlControls.Controls.Add(chkControl);
+            pnlControls.Controls.Add(chkCtrl);
             pnlControls.Controls.Add(chkWin);
             pnlControls.Controls.Add(chkShift);
             pnlControls.Location = new Point(0, 21);
@@ -158,7 +158,7 @@
 
         private Label lblInfo;
         private CheckBox chkAlt;
-        private CheckBox chkControl;
+        private CheckBox chkCtrl;
         private CheckBox chkShift;
         private CheckBox chkWin;
         private Panel pnlMain;

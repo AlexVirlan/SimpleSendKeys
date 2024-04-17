@@ -1,4 +1,5 @@
-﻿using SimpleSendKeys.Utils;
+﻿using Newtonsoft.Json.Linq;
+using SimpleSendKeys.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace SimpleSendKeys.Controls
 {
@@ -40,6 +42,22 @@ namespace SimpleSendKeys.Controls
             VirtualKeyCode = 45;
             UpdateUI();
             if (invokeEventHandler) { KeyUpdated?.Invoke(this, VirtualKeyCode); }
+        }
+
+        public bool SetKey(int keyCode, bool invokeEventHandler = true)
+        {
+            try
+            {
+                if (!Enum.IsDefined(typeof(Keys), keyCode)) { return false; }
+                VirtualKeyCode = keyCode;
+                UpdateUI();
+                if (invokeEventHandler) { KeyUpdated?.Invoke(this, VirtualKeyCode); }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
         #endregion
 

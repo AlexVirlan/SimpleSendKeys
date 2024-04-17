@@ -9,6 +9,7 @@ namespace SimpleSendKeys.Controls
         #region Variables
         #region Private
         private bool _extended = false;
+        private bool _configuring = false;
         #endregion
 
         #region Public
@@ -37,6 +38,32 @@ namespace SimpleSendKeys.Controls
             UpdateUI();
             if (invokeEventHandler) { ModifiersUpdated?.Invoke(this, Modifiers); }
         }
+
+        public bool SetKeys(List<ModifierKeys> modifierKeys, bool invokeEventHandler = true)
+        {
+            try
+            {
+                Modifiers = modifierKeys;
+                if (SortModifiers) { Modifiers.Sort(); }
+
+                _configuring = true;
+                chkAlt.Checked = chkCtrl.Checked = chkShift.Checked = chkWin.Checked = false;
+                foreach (ModifierKeys modifierKey in modifierKeys)
+                {
+                    Control[] controls = this.Controls.Find($"chk{modifierKey}", true);
+                    if (controls.Count() == 1) { ((CheckBox)controls[0]).Checked = true; }
+                }
+                _configuring = false;
+
+                UpdateUI();
+                if (invokeEventHandler) { ModifiersUpdated?.Invoke(this, Modifiers); }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         #endregion
 
         #region Private methods
@@ -49,7 +76,7 @@ namespace SimpleSendKeys.Controls
         private void CheckboxChanged(object sender, EventArgs e)
         {
             CheckBox? checkBox = sender as CheckBox;
-            if (checkBox is null) { return; }
+            if (checkBox is null || _configuring) { return; }
             if (checkBox.Tag is not null && Enum.IsDefined(typeof(ModifierKeys), checkBox.Tag))
             {
                 bool parsed = Enum.TryParse(checkBox.Tag.ToString(), ignoreCase: true, out ModifierKeys modifierKeys);
