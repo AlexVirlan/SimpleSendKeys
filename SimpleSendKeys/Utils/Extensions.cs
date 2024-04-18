@@ -10,6 +10,15 @@ namespace SimpleSendKeys.Utils
     {
         #region String
         public static bool INOE(this string str) => string.IsNullOrEmpty(str);
+
+        public static string CombineWithStartupPath(this string fileName)
+        {
+            if (fileName.INOE()) { return fileName; }
+            string file = Path.GetFileName(fileName);
+            string fullPath = Path.Combine(Application.StartupPath, file);
+            if (File.Exists(fullPath)) { return fullPath; }
+            else { return fileName; }
+        }
         #endregion
 
         #region Bool
