@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace SimpleSendKeys.Entities
 {
-    public static class Variables
+    public class Enums
     {
-        public static string SettingsFileName = "App.set";
+        public enum ViewType
+        {
+            Main = 0,
+            Settings = 1
+        }
     }
 }
