@@ -190,6 +190,12 @@ namespace SimpleSendKeys.Forms
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            FunctionResponse fr = AppSettings.Save();
+            if (fr.Error)
+            {
+                ShowMessage($"Error saving settings:{_NL + fr.Message}", MessageBoxIcon.Error);
+            }
+
             trayIcon.Visible = false;
             Environment.Exit(0);
         }
@@ -402,6 +408,7 @@ namespace SimpleSendKeys.Forms
         private void numBeforeDelay_ValueChanged(object sender, EventArgs e)
         {
             Settings.DelayBeforeSending = (int)numBeforeDelay.Value;
+            sendin5SecToolStripMenuItem.Text = $"Send (in {Settings.DelayBeforeSending} sec.)";
         }
 
         private void btnResetSet_Click(object sender, EventArgs e)
@@ -439,6 +446,11 @@ namespace SimpleSendKeys.Forms
                 ApplySettingsToUI();
                 UpdateHotKeys(ucModifierKeys.Modifiers.ToArray(), ucKeySelector.VirtualKeyCode);
             }
+        }
+
+        private void sendin5SecToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            btnSend_Click(sender, e);
         }
     }
 }

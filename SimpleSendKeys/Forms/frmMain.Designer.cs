@@ -68,6 +68,8 @@
             label10 = new Label();
             label8 = new Label();
             btnSettings = new Button();
+            sendin5SecToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)numBeforeDelay).BeginInit();
             trayContextMenu.SuspendLayout();
             pnlMain.SuspendLayout();
@@ -79,6 +81,7 @@
             // txtPayload
             // 
             txtPayload.BackColor = Color.FromArgb(17, 17, 17);
+            txtPayload.BorderStyle = BorderStyle.FixedSingle;
             txtPayload.ForeColor = Color.White;
             txtPayload.Location = new Point(10, 26);
             txtPayload.Multiline = true;
@@ -105,7 +108,7 @@
             // 
             lblPaste.AutoSize = true;
             lblPaste.Cursor = Cursors.Hand;
-            lblPaste.Font = new Font("Segoe UI", 9F, FontStyle.Underline, GraphicsUnit.Point);
+            lblPaste.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
             lblPaste.Location = new Point(187, 8);
             lblPaste.Name = "lblPaste";
             lblPaste.Size = new Size(35, 15);
@@ -224,21 +227,21 @@
             // 
             // trayContextMenu
             // 
-            trayContextMenu.Items.AddRange(new ToolStripItem[] { showToolStripMenuItem, exitToolStripMenuItem });
+            trayContextMenu.Items.AddRange(new ToolStripItem[] { showToolStripMenuItem, sendin5SecToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             trayContextMenu.Name = "trayContextMenu";
-            trayContextMenu.Size = new Size(104, 48);
+            trayContextMenu.Size = new Size(181, 98);
             // 
             // showToolStripMenuItem
             // 
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(103, 22);
+            showToolStripMenuItem.Size = new Size(180, 22);
             showToolStripMenuItem.Text = "Show";
             showToolStripMenuItem.Click += showToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(103, 22);
+            exitToolStripMenuItem.Size = new Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -383,7 +386,7 @@
             // 
             lblStopInfo.AutoSize = true;
             lblStopInfo.Cursor = Cursors.Hand;
-            lblStopInfo.Font = new Font("Segoe UI", 9F, FontStyle.Underline, GraphicsUnit.Point);
+            lblStopInfo.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
             lblStopInfo.Location = new Point(344, 9);
             lblStopInfo.Name = "lblStopInfo";
             lblStopInfo.Size = new Size(77, 15);
@@ -395,7 +398,7 @@
             // 
             lblResetHK.AutoSize = true;
             lblResetHK.Cursor = Cursors.Hand;
-            lblResetHK.Font = new Font("Segoe UI", 9F, FontStyle.Underline, GraphicsUnit.Point);
+            lblResetHK.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
             lblResetHK.Location = new Point(286, 9);
             lblResetHK.Name = "lblResetHK";
             lblResetHK.Size = new Size(35, 15);
@@ -468,7 +471,7 @@
             // 
             lblGitHubInfo.AutoSize = true;
             lblGitHubInfo.Cursor = Cursors.Hand;
-            lblGitHubInfo.Font = new Font("Segoe UI", 9F, FontStyle.Underline, GraphicsUnit.Point);
+            lblGitHubInfo.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
             lblGitHubInfo.Location = new Point(17, 193);
             lblGitHubInfo.Name = "lblGitHubInfo";
             lblGitHubInfo.Size = new Size(126, 15);
@@ -489,7 +492,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI", 9F, FontStyle.Underline, GraphicsUnit.Point);
+            label8.Font = new Font("Segoe UI", 9F, FontStyle.Underline);
             label8.Location = new Point(15, 10);
             label8.Name = "label8";
             label8.Size = new Size(49, 15);
@@ -512,6 +515,18 @@
             btnSettings.UseVisualStyleBackColor = false;
             btnSettings.Click += btnSettings_Click;
             // 
+            // sendin5SecToolStripMenuItem
+            // 
+            sendin5SecToolStripMenuItem.Name = "sendin5SecToolStripMenuItem";
+            sendin5SecToolStripMenuItem.Size = new Size(180, 22);
+            sendin5SecToolStripMenuItem.Text = "Send (in 5 sec.)";
+            sendin5SecToolStripMenuItem.Click += sendin5SecToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(177, 6);
+            // 
             // frmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -526,6 +541,7 @@
             Controls.Add(pnlSettings);
             ForeColor = Color.White;
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "frmMain";
             StartPosition = FormStartPosition.CenterScreen;
@@ -587,5 +603,7 @@
         private Button btnResetSet;
         private Label lblRuns;
         private Button btnRecSet;
+        private ToolStripMenuItem sendin5SecToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }
