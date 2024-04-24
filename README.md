@@ -1,4 +1,3 @@
-Simple Send Keys
 ![](https://raw.githubusercontent.com/AlexVirlan/SimpleSendKeys/main/Assets/SSK-screenshot.png)
 
 
@@ -8,6 +7,12 @@ SSK tries to solve this by allowing you to set a text payload (or it can sync to
 
 
 # Recommended use
+These are the recommended settings:
+- Run on startup = on
+- Minimize to tray = on
+- Clipboard sync = on
+
+This way, the app will run in the background at startup (accessible via the tray icon) and everything you have in the clipboard will be ready to be inserted just by using the hotkey. You can apply these settings by pressing the "Apply the recommended settings" button from the settings panel.
 
 
 # Dependencies
@@ -16,7 +21,18 @@ SSK tries to solve this by allowing you to set a text payload (or it can sync to
 
 
 # License
+Free to use.
 
 
 # Others
 If you like this app, please support it by giving it a star on GitHub. Thanks!
+
+# To do
+- Implement 'Keep on top' option/setting.
+
+
+<style>
+h1 {
+    margin-block-start: 1em;
+}
+</style>
