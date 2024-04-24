@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace SimpleSendKeys.Utils.KeyboardHook
 {
@@ -56,7 +51,7 @@ namespace SimpleSendKeys.Utils.KeyboardHook
             this._downModifierKeys = new HashSet<ModifierKeys>();
             this._downKeys = new HashSet<int>();
         }
-        #endregion        
+        #endregion
 
         #region Public API
         /// <summary>

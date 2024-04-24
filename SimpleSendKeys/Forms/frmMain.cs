@@ -41,10 +41,6 @@ namespace SimpleSendKeys.Forms
                         Environment.Exit(0);
                     }
                 }
-                //else
-                //{
-                //    ApplySettingsToUI();
-                //}
             }
             else
             {
@@ -454,5 +450,3 @@ namespace SimpleSendKeys.Forms
         }
     }
 }
-
-// https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-7.0
