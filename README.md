@@ -37,3 +37,4 @@ If you like this app, please support it by giving it a star on GitHub. Thanks!
 # To do
 - Implement 'Keep on top' option/setting.
 - Adding the possibility to send modifiers key.
+- Fix the UI size bug for the hotkey user controls.
