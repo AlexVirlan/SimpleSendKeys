@@ -186,14 +186,7 @@ namespace SimpleSendKeys.Forms
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionResponse fr = AppSettings.Save();
-            if (fr.Error)
-            {
-                ShowMessage($"Error saving settings:{_NL + fr.Message}", MessageBoxIcon.Error);
-            }
-
-            trayIcon.Visible = false;
-            Environment.Exit(0);
+            frmMain_FormClosing(sender, new FormClosingEventArgs(CloseReason.UserClosing, cancel: false));
         }
 
         private void frmMain_Resize(object sender, EventArgs e)
@@ -270,14 +263,26 @@ namespace SimpleSendKeys.Forms
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            FunctionResponse fr = AppSettings.Save();
-            if (fr.Error)
+            if (e.CloseReason == CloseReason.UserClosing)
             {
-                ShowMessage($"Error saving settings:{_NL + fr.Message}", MessageBoxIcon.Error);
-            }
+                DialogResult dialogResult = MessageBox.Show(this, "Are you sure that you want to exit the app?", _appTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    FunctionResponse fr = AppSettings.Save();
+                    if (fr.Error)
+                    {
+                        ShowMessage($"Error saving settings:{_NL + fr.Message}", MessageBoxIcon.Error);
+                    }
 
-            trayIcon.Visible = false;
-            Environment.Exit(0);
+                    trayIcon.Visible = false;
+                    Environment.Exit(0);
+                }
+                e.Cancel = true;
+            }
+            else
+            {
+                AppSettings.Save();
+            }
         }
 
         private void ShowMessage(string message, MessageBoxIcon icon = MessageBoxIcon.Information, string title = "")
