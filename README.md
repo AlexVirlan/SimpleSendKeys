@@ -2,7 +2,7 @@
 <br><br>
 
 # What is this?
-Have you ever found yourself in a situation where you can't use the `copy-paste` functionality? Eg. some [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol) connections (or apps) have it disabled. And it sucks!
+Have you ever found yourself in a situation where you can't use the `copy-paste` functionality? Eg. some [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol) connections (or apps) have it disabled. You can copy but you can't paste. And it sucks!
 SSK tries to solve this by allowing you to set a text payload (or it can sync to your keyboard - see the "recommended use" section below) and send each character as if you typed it.
 <br><br>
 
@@ -12,13 +12,13 @@ These are the recommended settings:
 - Minimize to tray = on
 - Clipboard sync = on
 
-This way, the app will run in the background at startup (accessible via the tray icon) and everything you have in the clipboard will be ready to be inserted just by using the hotkey. You can apply these settings by pressing the "Apply the recommended settings" button from the settings panel.
+This way, the app will run in the background at startup (accessible via the system tray icon) and everything you have in the clipboard will be ready to be inserted just by using the hotkey. You can apply these settings by pressing the "Apply the recommended settings" button from the settings panel.
 <br><br>
 
 # Installation
 Go to the [releases page](https://github.com/AlexVirlan/SimpleSendKeys/releases) and choose from the last version, one of the following options:
 - Setup (recommended) - one executable file, the classic installation that we all know and love.
-- Portable - one [7zip](https://www.7-zip.org/) file. Please be aware that if you are using a portable version and you enable the 'Run on startup' setting, you must not change the app's location/path. If you do change it, make sure that you open the app and disable then enable the setting again.
+- Portable - one [7zip](https://www.7-zip.org/) file. Please be aware that if you are using a portable version and you enable the "Run on startup" setting, you must not change the app's location/path. If you do change it, make sure that you open the app and disable then enable the setting again.
 <br><br>
 
 # More info / integrations
@@ -26,7 +26,7 @@ The currently available command arguments are:
 - minimized - will start the app minimized in the system tray.
 - send - will start to send the characters (only if the app is already running, otherwise it will just start the app).
 
-You don't have to use any dashes for the arguments (eg. -send or --send).
+You don't have to use any dashes for the arguments (eg. `-send` or `--send`).
 
 Example: you can use the `send` argument when calling the SSK's executable file, to integrate SSK with other APPs. If you have a [Stream Deck](https://www.elgato.com/stream-deck) you can set it up as follows:
 `"INSTALLATION_PATH\SimpleSendKeys.exe" send`<br><br>
