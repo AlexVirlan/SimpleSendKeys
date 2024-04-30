@@ -1,0 +1,5 @@
+This app is free to use!
+
+You are NOT allowed to sell this app in its original or modified form.
+For more info please visit:
+https://github.com/AlexVirlan/SimpleSendKeys

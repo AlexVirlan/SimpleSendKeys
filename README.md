@@ -18,18 +18,18 @@ This way, the app will run in the background at startup (accessible via the tray
 # Installation
 Go to the [releases page](https://github.com/AlexVirlan/SimpleSendKeys/releases) and choose from the last version, one of the following options:
 - Setup (recommended) - one executable file, the classic installation that we all know and love.
-- Portable - one [7zip](https://www.7-zip.org/) file. Please be aware that if you are using a portable version and you enable the 'Run on startup' setting, you must not change the app's location/path. If you do change it, make sure that you open the app and disable then reenable the setting again.
+- Portable - one [7zip](https://www.7-zip.org/) file. Please be aware that if you are using a portable version and you enable the 'Run on startup' setting, you must not change the app's location/path. If you do change it, make sure that you open the app and disable then enable the setting again.
 <br><br>
 
 # More info / integrations
 The currently available command arguments are:
 - minimized - will start the app minimized in the system tray.
-- send - will start to send the characters (only if the app is already running).
+- send - will start to send the characters (only if the app is already running, otherwise it will just start the app).
 
-Please do <strong>NOT</strong> use any dashes for the arguments (eg. -send or --send).
+You don't have to use any dashes for the arguments (eg. -send or --send).
 
 Example: you can use the `send` argument when calling the SSK's executable file, to integrate SSK with other APPs. If you have a [Stream Deck](https://www.elgato.com/stream-deck) you can set it up as follows:
-`"INSTALLATION_PATH\SimpleSendKeys.exe" send`
+`"INSTALLATION_PATH\SimpleSendKeys.exe" send`<br><br>
 ![](https://raw.githubusercontent.com/AlexVirlan/SimpleSendKeys/main/Assets/SSK-stream-deck.png)
 <br><br>
 
