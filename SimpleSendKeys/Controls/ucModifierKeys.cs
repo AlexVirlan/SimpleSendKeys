@@ -16,6 +16,9 @@ namespace SimpleSendKeys.Controls
         [Description("The modifiers list."), Category("Data")]
         public List<ModifierKeys> Modifiers { get; private set; }
 
+        [Description("The modifiers list as displayed (text)."), Category("Data")]
+        public string ModifiersText { get; private set; }
+
         [Description("Whether to sort the modifiers or not."), Category("Appearance")]
         public bool SortModifiers { get; set; } = true;
 
@@ -35,6 +38,7 @@ namespace SimpleSendKeys.Controls
         public void Reset(bool invokeEventHandler = true)
         {
             Modifiers = new List<ModifierKeys>();
+            chkAlt.Checked = chkCtrl.Checked = chkShift.Checked = chkWin.Checked = false;
             UpdateUI();
             if (invokeEventHandler) { ModifiersUpdated?.Invoke(this, Modifiers); }
         }
@@ -84,15 +88,19 @@ namespace SimpleSendKeys.Controls
                 if (checkBox.Checked) { Modifiers.Add(modifierKeys); }
                 else { Modifiers.Remove(modifierKeys); }
                 if (SortModifiers) { Modifiers.Sort(); }
+                UpdateUI();
                 ModifiersUpdated?.Invoke(this, Modifiers);
             }
-            UpdateUI();
         }
 
         private void UpdateUI()
         {
-            if (Modifiers.Count == 0) { lblInfo.Text = "-"; }
-            else { lblInfo.Text = string.Join(", ", Modifiers); }
+            if (Modifiers.Count == 0)
+            {
+                lblInfo.Text = "-";
+                ModifiersText = string.Empty;
+            }
+            else { ModifiersText = lblInfo.Text = string.Join(", ", Modifiers); }
         }
 
         private void lblInfo_Click(object sender, EventArgs e)
