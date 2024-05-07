@@ -11,6 +11,7 @@ namespace SimpleSendKeys.Utils
         public static bool ClipboardSync = false;
         public static bool MaskText = false;
         public static bool ClearCbAfterSending = false;
+        public static bool BlockHotkeyPropagation = false;
 
         public static int DelayBeforeSending = 5;
         public static int DelayBetweenChars = 50;
@@ -19,6 +20,7 @@ namespace SimpleSendKeys.Utils
         public static List<ModifierKeys> ModifierKeys = new();
 
         public static int AppRuns = 0;
+        public static int CharsSent = 0;
     }
 
     [Serializable]
@@ -40,6 +42,9 @@ namespace SimpleSendKeys.Utils
         [JsonProperty("ClearCbAfterSending")]
         public bool clearCbAfterSending { get { return ClearCbAfterSending; } set { ClearCbAfterSending = value; } }
 
+        [JsonProperty("BlockHotkeyPropagation")]
+        public bool blockHotkeyPropagation { get { return BlockHotkeyPropagation; } set { BlockHotkeyPropagation = value; } }
+
         [JsonProperty("DelayBeforeSending")]
         public int delayBeforeSending { get { return DelayBeforeSending; } set { DelayBeforeSending = value; } }
 
@@ -54,6 +59,9 @@ namespace SimpleSendKeys.Utils
 
         [JsonProperty("AppRuns")]
         public int appRuns { get { return AppRuns; } set { AppRuns = value; } }
+
+        [JsonProperty("CharsSent")]
+        public int charsSent { get { return CharsSent; } set { CharsSent = value; } }
         #endregion
 
         #region Methods
