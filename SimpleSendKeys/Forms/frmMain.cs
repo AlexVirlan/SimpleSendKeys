@@ -2,6 +2,7 @@
 using SimpleSendKeys.Utils;
 using SimpleSendKeys.Utils.KeyboardHook;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using static SimpleSendKeys.Entities.Enums;
 
 namespace SimpleSendKeys.Forms
@@ -11,14 +12,23 @@ namespace SimpleSendKeys.Forms
         #region Variables
         private bool _sending = false;
         private bool _forceStop = false;
+        private bool _updatingUI = false;
         private string _appTitle = "Simple Send Keys";
         private string _NL = Environment.NewLine;
         private Action _kbStartAction;
         private Action _kbStopAction;
+        private List<string>? _args = null;
         private KeyboardHookManager _keyboardHookManager;
         private Guid _startHkGuid;
-        private List<string>? _args = null;
         private ViewType _viewType = ViewType.Main;
+        #endregion
+
+        #region Dll imports
+        private static readonly int WM_SSK_SHOW = RegisterWindowMessage("WM_SSK_SHOW");
+        private static readonly int WM_SSK_SEND = RegisterWindowMessage("WM_SSK_SEND");
+
+        [DllImport("user32")]
+        private static extern int RegisterWindowMessage(string message);
         #endregion
 
         public frmMain(List<string>? args = null)
@@ -53,7 +63,6 @@ namespace SimpleSendKeys.Forms
             }
 
             Settings.AppRuns++;
-            lblRuns.Text = $"Runs: {Settings.AppRuns}";
             ApplySettingsToUI();
 
             _kbStartAction = () => OnKbStart();
@@ -62,17 +71,21 @@ namespace SimpleSendKeys.Forms
             _keyboardHookManager = new KeyboardHookManager();
             _keyboardHookManager.Start();
 
-            _startHkGuid = _keyboardHookManager.RegisterHotkey(Settings.ModifierKeys.ToArray(), Settings.HotKey, _kbStartAction);
-            _keyboardHookManager.RegisterHotkey((int)Keys.Escape, _kbStopAction);
+            _startHkGuid = _keyboardHookManager.RegisterHotkey(Settings.ModifierKeys.ToArray(), Settings.HotKey, _kbStartAction, Settings.BlockHotkeyPropagation);
+            _keyboardHookManager.RegisterHotkey((int)Keys.Escape, _kbStopAction, blocking: false);
 
             ucModifierKeys.ModifiersUpdated += OnModifierKeysUpdated;
             ucKeySelector.KeyUpdated += OnMainKeyUpdated;
+
+            this.Text += $""; // version
         }
 
         private void ApplySettingsToUI()
         {
+            _updatingUI = true;
             chkRunOnStartup.Checked = Settings.RunOnStartup;
             chkMinimizeToTray.Checked = Settings.MinimizeToTray;
+            chkBlockHotkeyPropagation.Checked = Settings.BlockHotkeyPropagation;
             chkClipboardSync.Checked = Settings.ClipboardSync;
             chkMask.Checked = Settings.MaskText;
             chkClearCbAfterSending.Checked = Settings.ClearCbAfterSending;
@@ -85,6 +98,8 @@ namespace SimpleSendKeys.Forms
                 ShowMessage("An issue occurred when trying to set the hotkey." + _NL +
                     "Please try to set it manually or reset it.", MessageBoxIcon.Warning);
             }
+            UpdateTrayHotkeyInfo();
+            _updatingUI = false;
         }
 
         private void OnKbStart()
@@ -114,9 +129,11 @@ namespace SimpleSendKeys.Forms
             try
             {
                 _keyboardHookManager.UnregisterHotkey(_startHkGuid);
-                _startHkGuid = _keyboardHookManager.RegisterHotkey(modifierKeys, mainKey, _kbStartAction);
+                _startHkGuid = _keyboardHookManager.RegisterHotkey(modifierKeys, mainKey, _kbStartAction, Settings.BlockHotkeyPropagation);
                 Settings.HotKey = mainKey;
                 Settings.ModifierKeys = modifierKeys.ToList();
+
+                UpdateTrayHotkeyInfo();
             }
             catch (Exception ex)
             {
@@ -124,6 +141,12 @@ namespace SimpleSendKeys.Forms
                     "You can still use the 'Send' button in the meantime." + _NL +
                     "Please contact the developer via the GitHub page for help.", MessageBoxIcon.Error);
             }
+        }
+
+        private void UpdateTrayHotkeyInfo()
+        {
+            string modK = ucModifierKeys.ModifiersText.INOE() ? "" : $"{_NL + ucModifierKeys.ModifiersText} + ";
+            hotkeyInsertToolStripMenuItem.Text = $"Hotkey: {modK}{(Keys)ucKeySelector.VirtualKeyCode}";
         }
 
         private void SendPayload(string text, int charDelay)
@@ -138,6 +161,7 @@ namespace SimpleSendKeys.Forms
                 {
                     if (_forceStop) { break; }
                     index++;
+                    Settings.CharsSent++;
                     UpdateStatus($"Sending char {index}/{text.Length}: {c}");
                     switch (c)
                     {
@@ -173,6 +197,14 @@ namespace SimpleSendKeys.Forms
             }
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            // if ((m.WParam.ToInt32() == 0xCDCD) && (m.LParam.ToInt32() == 0xEFEF))
+            if (m.Msg == WM_SSK_SHOW) { showToolStripMenuItem_Click(this, EventArgs.Empty); }
+            else if (m.Msg == WM_SSK_SEND) { OnKbStart(); }
+            base.WndProc(ref m);
+        }
+
         private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             showToolStripMenuItem_Click(sender, EventArgs.Empty);
@@ -182,6 +214,7 @@ namespace SimpleSendKeys.Forms
         {
             Show();
             WindowState = FormWindowState.Normal;
+            Activate();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -201,7 +234,7 @@ namespace SimpleSendKeys.Forms
 
         private void lblPaste_Click(object sender, EventArgs e)
         {
-            txtPayload.Text = Clipboard.GetText();
+            if (!Settings.ClipboardSync) { txtPayload.Text = Clipboard.GetText(); }
         }
 
         private void chkClipboardSync_CheckedChanged(object sender, EventArgs e)
@@ -336,11 +369,6 @@ namespace SimpleSendKeys.Forms
             UpdateHotKeys(ucModifierKeys.Modifiers.ToArray(), ucKeySelector.VirtualKeyCode);
         }
 
-        private void lblStopInfo_Click(object sender, EventArgs e)
-        {
-            ShowMessage("To stop an ongoing sending, just press the 'Escape' key.");
-        }
-
         private void frmMain_Shown(object sender, EventArgs e)
         {
             if (_args is not null)
@@ -359,10 +387,19 @@ namespace SimpleSendKeys.Forms
             if (Settings.AppRuns < 2)
             {
                 ShowMessage("Welcome, and thank you for using this app!" + _NL + _NL +
+                    "Please click the 'More HK info' label (upper right corner) to learn more about hotkeys." + _NL + _NL +
                     "For more info, you can visit the GitHub page  - you can find a link to it in the settings panel. " +
                     "While you're there, check out the 'Recommended settings' button for info about the best way to use this app." + _NL + _NL +
                     "Don't forget to give it a star on GitHub if you find it useful!" + _NL + "Thanks!");
+                trayIcon.ShowBalloonTip(12000, _appTitle, "You can also find me in the system tray! :)", ToolTipIcon.Info);
             }
+
+            ShowUI();
+        }
+
+        private void ShowUI()
+        {
+
         }
 
         private void SetView(ViewType viewType)
@@ -376,6 +413,7 @@ namespace SimpleSendKeys.Forms
                     break;
 
                 case ViewType.Settings:
+                    lblRuns.Text = $"Runs: {Settings.AppRuns + Environment.NewLine}Chars: {Settings.CharsSent}";
                     pnlSettings.Visible = true;
                     break;
             }
@@ -402,6 +440,7 @@ namespace SimpleSendKeys.Forms
 
         private void chkRunOnStartup_CheckedChanged(object sender, EventArgs e)
         {
+            if (_updatingUI) { return; }
             Settings.RunOnStartup = chkRunOnStartup.Checked;
             Helpers.SetStartup(active: Settings.RunOnStartup, args: "minimized");
         }
@@ -409,7 +448,7 @@ namespace SimpleSendKeys.Forms
         private void numBeforeDelay_ValueChanged(object sender, EventArgs e)
         {
             Settings.DelayBeforeSending = (int)numBeforeDelay.Value;
-            sendin5SecToolStripMenuItem.Text = $"Send (in {Settings.DelayBeforeSending} sec.)";
+            sendinXSecToolStripMenuItem.Text = $"Send (in {Settings.DelayBeforeSending} sec.)";
         }
 
         private void btnResetSet_Click(object sender, EventArgs e)
@@ -419,6 +458,7 @@ namespace SimpleSendKeys.Forms
             {
                 Settings.RunOnStartup = false;
                 Settings.MinimizeToTray = true;
+                Settings.BlockHotkeyPropagation = false;
                 Settings.ClipboardSync = false;
                 Settings.MaskText = false;
                 Settings.ClearCbAfterSending = false;
@@ -449,9 +489,54 @@ namespace SimpleSendKeys.Forms
             }
         }
 
-        private void sendin5SecToolStripMenuItem_Click(object sender, EventArgs e)
+        private void sendinXSecToolStripMenuItem_Click(object sender, EventArgs e)
         {
             btnSend_Click(sender, e);
+        }
+
+        private void lblStatus_Click(object sender, EventArgs e)
+        {
+            if (lblStatus.Text.Equals("Idle", StringComparison.OrdinalIgnoreCase))
+            { lblStatus.Text = $"Runs: {Settings.AppRuns}, Chars: {Settings.CharsSent}"; }
+            else { lblStatus.Text = "Idle"; }
+        }
+
+        private void lblDBCinfo_Click(object sender, EventArgs e)
+        {
+            ShowMessage("You might have noticed that even if you set the 'delay between chars' to 1ms, if you enter only one char, the sending time will be 101ms." + _NL + _NL +
+                "That's because each char takes on average 100ms to be sent on its own - so that value is 'baked in' when the sending time is calculated." + _NL + _NL +
+                "The value you set here, will be added to that 100ms average.");
+        }
+
+        private void lblHKInfo_Click(object sender, EventArgs e)
+        {
+            ShowMessage("You can set whatever hotkey you want, but please be aware that some of them might be used or affected by other apps or OS functionalities. " +
+                "So keep it simple and unique." + _NL + _NL +
+                "To stop an ongoing sending, just press the 'Escape' key." + _NL + _NL +
+                "Important: when you use your hotkey, release it quickly (don't keep it pressed) because some key combinations " +
+                "might interfere with the app you're trying to send the data to.");
+        }
+
+        private void chkBlockHotkeyPropagation_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_updatingUI) { return; }
+            Settings.BlockHotkeyPropagation = chkBlockHotkeyPropagation.Checked;
+            UpdateHotKeys(ucModifierKeys.Modifiers.ToArray(), ucKeySelector.VirtualKeyCode);
+        }
+
+        private void lblBlockHKPInfo_Click(object sender, EventArgs e)
+        {
+            ShowMessage("This app uses a low-level keyboard hook for hotkeys, meaning that the hotkeys you set are not blocked and they can be `simultaneously` " +
+                "used by other apps or the OS." + _NL + _NL +
+                "For example, if you set the hotkey as Ctrl + V and press that key combination, the OS will process that and paste whatever you have in the clipboard, " +
+                "and at the same time SSK will start to send the characters." + _NL + _NL +
+                "This option allows you to control this hotkey propagation behavior. So (using the above example) if you enable this option and then press Ctrl + V, " +
+                "the OS will NOT paste anything and only SSK will start to send the characters.");
+        }
+
+        private void lblClear_Click(object sender, EventArgs e)
+        {
+            if (!Settings.ClipboardSync) { txtPayload.Clear(); }
         }
     }
 }
