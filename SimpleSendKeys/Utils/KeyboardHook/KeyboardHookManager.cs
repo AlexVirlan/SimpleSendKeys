@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace SimpleSendKeys.Utils.KeyboardHook
 {
@@ -13,10 +14,13 @@ namespace SimpleSendKeys.Utils.KeyboardHook
             public readonly Action Action;
             public readonly bool Blocking;
 
+            public readonly Action<EventKeyType> EventHandler;
+
             public CallbackStruct(Action action, bool blocking)
             {
                 this.Action = action;
                 this.Blocking = blocking;
+
             }
         }
 
@@ -54,6 +58,12 @@ namespace SimpleSendKeys.Utils.KeyboardHook
         #endregion
 
         #region Public API
+        public enum EventKeyType
+        {
+            KeyDown = 0,
+            KeyUp = 1
+        }
+
         /// <summary>
         /// Starts the low-level keyboard hook.
         /// Hotkeys can be registered regardless of the low-level keyboard hook's state, but their callbacks
@@ -186,8 +196,9 @@ namespace SimpleSendKeys.Utils.KeyboardHook
         #endregion
 
         #region Private methods
-        private void InvokeAction(object actionObj)
+        private void InvokeAction(object? actionObj)
         {
+            if (actionObj is null) { return; }
             var action = (Action)actionObj;
             action.Invoke();
         }
@@ -229,11 +240,8 @@ namespace SimpleSendKeys.Utils.KeyboardHook
             if (nCode >= 0)
             {
                 var vkCode = Marshal.ReadInt32(lParam);
-
                 var blocking = this.HandleSingleKeyboardInput(wParam, vkCode);
-
-                if (blocking)
-                    return (IntPtr)1;
+                if (blocking) { return (IntPtr)1; }
             }
 
             return CallNextHookEx(_hookId, nCode, wParam, lParam);
@@ -285,17 +293,14 @@ namespace SimpleSendKeys.Utils.KeyboardHook
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook,
-            LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
-
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
-            IntPtr wParam, IntPtr lParam);
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         /// Loads the library.

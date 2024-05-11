@@ -24,33 +24,25 @@ namespace SimpleSendKeys.Utils.KeyboardHook
             this.Identifier = identifier;
         }
 
-        public bool Equals(KeybindStruct other)
+        public bool Equals(KeybindStruct? other)
         {
-            if (other == null)
-                return false;
-
-            if (this.VirtualKeyCode != other.VirtualKeyCode)
-                return false;
-
-            if (this.Modifiers.Count != other.Modifiers.Count)
-                return false;
+            if (other == null) { return false; }
+            if (this.VirtualKeyCode != other.VirtualKeyCode) { return false; }
+            if (this.Modifiers.Count != other.Modifiers.Count) { return false; }
 
             foreach (var modifier in this.Modifiers)
             {
-                if (!other.Modifiers.Contains(modifier))
-                {
-                    return false;
-                }
+                if (!other.Modifiers.Contains(modifier)) { return false; }
             }
 
             return true;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (ReferenceEquals(null, obj)) { return false; }
+            if (ReferenceEquals(this, obj)) { return true; }
+            if (obj.GetType() != this.GetType()) { return false; }
 
             return Equals((KeybindStruct)obj);
         }
@@ -68,7 +60,6 @@ namespace SimpleSendKeys.Utils.KeyboardHook
             }
 
             hash = (hash * 7) + modifiersHashSum;
-
             return hash;
         }
     }
