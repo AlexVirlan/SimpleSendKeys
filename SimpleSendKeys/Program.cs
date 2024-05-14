@@ -1,6 +1,5 @@
 using SimpleSendKeys.Forms;
 using SimpleSendKeys.Utils;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace SimpleSendKeys
@@ -22,8 +21,6 @@ namespace SimpleSendKeys
         [STAThread]
         static void Main()
         {
-
-
             List<string> args = Environment.GetCommandLineArgs().Skip(1).ToList();
             args.ForEach(arg => arg = arg.Replace("-", string.Empty));
 

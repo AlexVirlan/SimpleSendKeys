@@ -18,5 +18,24 @@ namespace SimpleSendKeys.Utils
             else { rk.DeleteValue("Simple Send Keys", throwOnMissingValue: false); }
             return new FunctionResponse(error: false);
         }
+
+        public static string GetCopyPath(string path)
+        {
+            if (string.IsNullOrEmpty(path)) { return path; }
+
+            string? filePathOnly = Path.GetDirectoryName(path);
+            if (filePathOnly is null) { return path; }
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+            string fileExtension = Path.GetExtension(path);
+
+            int index = 0;
+            string result = string.Empty;
+            while (File.Exists(path))
+            {
+                index++;
+                result = Path.Combine(filePathOnly, $"{fileNameWithoutExtension} ({index}){fileExtension}");
+            }
+            return result;
+        }
     }
 }
