@@ -11,6 +11,7 @@ namespace SimpleSendKeys.Utils
         public static bool ClipboardSync = false;
         public static bool MaskText = false;
         public static bool ClearCbAfterSending = false;
+        public static bool KeepOnTop = false;
         public static bool BlockHotkeyPropagation = false;
 
         public static int DelayBeforeSending = 5;
@@ -41,6 +42,9 @@ namespace SimpleSendKeys.Utils
 
         [JsonProperty("ClearCbAfterSending")]
         public bool clearCbAfterSending { get { return ClearCbAfterSending; } set { ClearCbAfterSending = value; } }
+
+        [JsonProperty("KeepOnTop")]
+        public bool keepOnTop { get { return KeepOnTop; } set { KeepOnTop = value; } }
 
         [JsonProperty("BlockHotkeyPropagation")]
         public bool blockHotkeyPropagation { get { return BlockHotkeyPropagation; } set { BlockHotkeyPropagation = value; } }
