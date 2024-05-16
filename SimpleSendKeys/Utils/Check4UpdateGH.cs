@@ -17,12 +17,13 @@ namespace SimpleSendKeys.Utils
         public string Owner { get; set; }
         public string Repo { get; set; }
         public CheckSettings CheckSettings { get; set; }
+        public UpdateCheckResult UpdateCheckResult { get; set; } = new();
         #endregion
 
         #region Private
         private bool Initialized = false;
         private string APIUrl = "https://api.github.com/repos";
-        private HttpClient HttpClient = new HttpClient();
+        private HttpClient HttpClient = new();
         private Assembly Assembly = Assembly.GetExecutingAssembly();
         #endregion
         #endregion
@@ -30,7 +31,9 @@ namespace SimpleSendKeys.Utils
         #region Constructors
         public Check4UpdateGH()
         {
-            GetAndSetOwnerAndRepo();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.Location);
+            Owner = fileVersionInfo.CompanyName?.Replace(" ", string.Empty) ?? string.Empty;
+            Repo = fileVersionInfo.ProductName?.Replace(" ", string.Empty) ?? string.Empty;
             CheckSettings = new();
             Initialize();
         }
@@ -56,8 +59,8 @@ namespace SimpleSendKeys.Utils
         #region Public
         public UpdateCheckResult Check()
         {
-            if (string.IsNullOrEmpty(Owner)) { return new UpdateCheckResult("The 'Owner' field is empty."); }
-            if (string.IsNullOrEmpty(Repo)) { return new UpdateCheckResult("The 'Repo' field is empty."); }
+            if (string.IsNullOrEmpty(Owner)) { return UpdateCheckResult = new UpdateCheckResult("The 'Owner' field is empty."); }
+            if (string.IsNullOrEmpty(Repo)) { return UpdateCheckResult = new UpdateCheckResult("The 'Repo' field is empty."); }
 
             try
             {
@@ -71,7 +74,7 @@ namespace SimpleSendKeys.Utils
                     List<GitHubRelease>? gitHubReleases = JsonConvert.DeserializeObject<List<GitHubRelease>>(responseString);
 
                     if (gitHubReleases is not null && gitHubReleases.Count > 0) { gitHubRelease = gitHubReleases[0]; }
-                    else { return new UpdateCheckResult(success: true, message: "There are no releases available."); }
+                    else { return UpdateCheckResult = new UpdateCheckResult(success: true, message: "There are no releases available."); }
                     #endregion
 
                     #region Version check
@@ -121,31 +124,87 @@ namespace SimpleSendKeys.Utils
                     #region Computing result
                     if (CheckSettings.CheckType == CheckType.VersionThenTime)
                     {
-                        if (versionSuccess) { return new UpdateCheckResult(currentVersion, latestGHVersion, gitHubRelease); }
-                        else if (timeSuccess) { return new UpdateCheckResult(newVersionAvailable: true); }
-                        else { return new UpdateCheckResult(newVersionAvailable: false); }
+                        if (versionSuccess) { return UpdateCheckResult = new UpdateCheckResult(currentVersion, latestGHVersion, gitHubRelease); }
+                        else if (timeSuccess) { return UpdateCheckResult = new UpdateCheckResult(newVersionAvailable: true); }
+                        else { return UpdateCheckResult = new UpdateCheckResult(newVersionAvailable: false); }
                     }
                     else if (CheckSettings.CheckType == CheckType.OnlyVersion)
                     {
-                        if (versionSuccess) { return new UpdateCheckResult(currentVersion, latestGHVersion, gitHubRelease); }
-                        else { return new UpdateCheckResult(newVersionAvailable: false); }
+                        if (versionSuccess) { return UpdateCheckResult = new UpdateCheckResult(currentVersion, latestGHVersion, gitHubRelease); }
+                        else { return UpdateCheckResult = new UpdateCheckResult(newVersionAvailable: false); }
                     }
                     else if (CheckSettings.CheckType == CheckType.OnlyTime)
                     {
-                        if (timeSuccess) { return new UpdateCheckResult(newVersionAvailable: true); }
-                        else { return new UpdateCheckResult(newVersionAvailable: false); }
+                        if (timeSuccess) { return UpdateCheckResult = new UpdateCheckResult(newVersionAvailable: true); }
+                        else { return UpdateCheckResult = new UpdateCheckResult(newVersionAvailable: false); }
                     }
-                    else { return new UpdateCheckResult(newVersionAvailable: false); }
+                    else { return UpdateCheckResult = new UpdateCheckResult(newVersionAvailable: false); }
                     #endregion
                 }
                 else
                 {
-                    return new UpdateCheckResult($"The GitHub API responded with {response.StatusCode} status code.");
+                    return UpdateCheckResult = new UpdateCheckResult($"The GitHub API responded with {response.StatusCode} status code.");
                 }
             }
             catch (Exception ex)
             {
-                return new UpdateCheckResult(ex.Message);
+                return UpdateCheckResult = new UpdateCheckResult(ex.Message);
+            }
+        }
+
+        public async Task<(bool DownloadSuccess, string? DownloadError)> DownloadAsync(dynamic assetIndexOrName, string path = "", bool openFile = true, bool overwrite = false)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) { path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); }
+
+                GitHubAsset? asset = null;
+                if (assetIndexOrName is int)
+                {
+                    if ((int)assetIndexOrName > UpdateCheckResult.GitHubRelease?.Assets.Count - 1)
+                    { return (false, $"Could not find the asset from index {assetIndexOrName}."); }
+                    asset = UpdateCheckResult.GitHubRelease?.Assets[(int)assetIndexOrName];
+                }
+                else if (assetIndexOrName is string)
+                {
+                    asset = UpdateCheckResult.GitHubRelease?.Assets
+                        .Where(a => a.Name.Contains((string)assetIndexOrName, StringComparison.OrdinalIgnoreCase))
+                        .FirstOrDefault();
+                    if (asset is null) { return (false, $"Could not find an asset that contains '{assetIndexOrName}' in its name."); }
+                }
+                else
+                {
+                    return (false, "The 'assetIndexOrName' parameter must be of type 'int' or 'string'.");
+                }
+
+                string filePath = Path.Combine(path, asset.Name);
+                if (!overwrite)
+                {
+                    int index = 0;
+                    string filePathOnly = Path.GetDirectoryName(filePath);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+                    string fileExtension = Path.GetExtension(filePath);
+                    while (File.Exists(filePath))
+                    {
+                        index++;
+                        filePath = Path.Combine(filePathOnly, $"{fileNameWithoutExtension} ({index}){fileExtension}");
+                    }
+                }
+
+                using HttpClient httpClient = new HttpClient();
+                using Stream stream = await httpClient.GetStreamAsync(asset.BrowserDownloadUrl);
+                using FileStream fileStream = new(filePath, FileMode.OpenOrCreate);
+                await stream.CopyToAsync(fileStream);
+                await fileStream.DisposeAsync();
+                await stream.DisposeAsync();
+                Thread.Sleep(100);
+
+                if (openFile) { Process.Start(filePath); }
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
             }
         }
 
@@ -163,13 +222,6 @@ namespace SimpleSendKeys.Utils
         #endregion
 
         #region Private
-        private void GetAndSetOwnerAndRepo()
-        {
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.Location);
-            Owner = fileVersionInfo.CompanyName?.Replace(" ", string.Empty) ?? string.Empty;
-            Repo = fileVersionInfo.ProductName?.Replace(" ", string.Empty) ?? string.Empty;
-        }
-
         private void Initialize()
         {
             HttpClient.DefaultRequestHeaders.Clear();
@@ -234,6 +286,8 @@ namespace SimpleSendKeys.Utils
         #endregion
 
         #region Constructors
+        public UpdateCheckResult() { }
+
         public UpdateCheckResult(string errorMessage)
         {
             Success = false;
