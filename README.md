@@ -44,12 +44,14 @@ Free to use.
 
 # Others
 If you like this app, please support it by giving it a star on GitHub. Thanks!<br>
-The setup is built with [Advanced Installer](https://www.advancedinstaller.com). You can find the project in the `Assets` folder.
+The setup is built with [Advanced Installer](https://www.advancedinstaller.com). You can find the project file in the `Assets` folder.<br>
+You can adjust the app's transparency by scrolling over the status bar (where it says "Idle").
 <br><br>
 
 # To do
-- Implement 'Block hotkey propagation' option/setting. (done)
-- Implement 'send' argument for other integrations. (done)
-- Implement 'Keep on top' option/setting.
+- <s>Implement 'Block hotkey propagation' option/setting.</s> (done)
+- <s>Implement 'send' argument for other integrations.</s> (done)
+- <s>Implement 'Keep on top' option/setting.</s> (done)
+- <s>Implement 'Transparency' feature.</s> (done)
 - Adding the possibility to send modifiers key.
 - Fix the UI size bug for the hotkey user controls.
