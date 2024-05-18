@@ -143,7 +143,7 @@ namespace SimpleSendKeys.Utils
                 }
                 else
                 {
-                    return UpdateCheckResult = new UpdateCheckResult($"The GitHub API responded with {response.StatusCode} status code.");
+                    return UpdateCheckResult = new UpdateCheckResult($"The GitHub API responded with {(int)response.StatusCode} status code ({response.StatusCode}).");
                 }
             }
             catch (Exception ex)

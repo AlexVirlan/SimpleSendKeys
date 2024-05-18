@@ -15,7 +15,7 @@ namespace SimpleSendKeys.Utils
         public static bool BlockHotkeyPropagation = false;
 
         public static int DelayBeforeSending = 5;
-        public static int DelayBetweenChars = 50;
+        public static int DelayBetweenChars = 25;
 
         public static int HotKey = 45;
         public static List<ModifierKeys> ModifierKeys = new();
