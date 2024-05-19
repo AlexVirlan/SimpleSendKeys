@@ -21,6 +21,7 @@ namespace SimpleSendKeys.Forms
         private KeyboardHookManager _keyboardHookManager;
         private Guid _startHkGuid;
         private ViewType _viewType = ViewType.Main;
+        private Check4UpdateGH _check4UpdateGH = new Check4UpdateGH();
         #endregion
 
         #region Dll imports
@@ -77,7 +78,8 @@ namespace SimpleSendKeys.Forms
             ucModifierKeys.ModifiersUpdated += OnModifierKeysUpdated;
             ucKeySelector.KeyUpdated += OnMainKeyUpdated;
 
-            this.Text += $""; // version
+            this.Text += $" ({_check4UpdateGH.GetCurrentVersion()?.ToString(3)})";
+            lblStatus.MouseWheel += new MouseEventHandler(StatusMouseWheelEvent);
         }
 
         private void ApplySettingsToUI()
@@ -89,6 +91,7 @@ namespace SimpleSendKeys.Forms
             chkClipboardSync.Checked = Settings.ClipboardSync;
             chkMask.Checked = Settings.MaskText;
             chkClearCbAfterSending.Checked = Settings.ClearCbAfterSending;
+            chkKeepOnTop.Checked = Settings.KeepOnTop;
             numBeforeDelay.Value = Settings.DelayBeforeSending;
             numBetweenDelay.Value = Settings.DelayBetweenChars;
             bool mainKeySet = ucKeySelector.SetKey(Settings.HotKey, invokeEventHandler: false);
@@ -232,15 +235,21 @@ namespace SimpleSendKeys.Forms
             Settings.MinimizeToTray = chkMinimizeToTray.Checked;
         }
 
-        private void lblPaste_Click(object sender, EventArgs e)
+        private void lblPaste_MouseClick(object sender, MouseEventArgs e)
         {
-            if (!Settings.ClipboardSync) { txtPayload.Text = Clipboard.GetText(); }
+            if (!Settings.ClipboardSync)
+            {
+                string cpText = Clipboard.GetText();
+                if (e.Button == MouseButtons.Left) { txtPayload.Text = cpText; }
+                else if (e.Button == MouseButtons.Right) { txtPayload.Text += cpText; }
+            }
         }
 
         private void chkClipboardSync_CheckedChanged(object sender, EventArgs e)
         {
             txtPayload.ReadOnly = chkClipboardSync.Checked;
             tmrCbSync.Enabled = chkClipboardSync.Checked;
+            lblPaste.Enabled = lblClear.Enabled = !chkClipboardSync.Checked;
             Settings.ClipboardSync = chkClipboardSync.Checked;
         }
 
@@ -384,6 +393,8 @@ namespace SimpleSendKeys.Forms
                 }
             }
 
+            this.Opacity = 1;
+
             if (Settings.AppRuns < 2)
             {
                 ShowMessage("Welcome, and thank you for using this app!" + _NL + _NL +
@@ -394,12 +405,33 @@ namespace SimpleSendKeys.Forms
                 trayIcon.ShowBalloonTip(12000, _appTitle, "You can also find me in the system tray! :)", ToolTipIcon.Info);
             }
 
-            ShowUI();
+            new Thread(Check4Update).Start();
         }
 
-        private void ShowUI()
+        private void Check4Update()
         {
-
+            UpdateCheckResult updateCheckResult = _check4UpdateGH.Check();
+            if (updateCheckResult.Success && updateCheckResult.NewVersionAvailable)
+            {
+                while (!this.Visible) { Thread.Sleep(640); }
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    lblUpdate.Visible = true;
+                    if (MessageBox.Show(this,
+                        $"There is a new version available: {updateCheckResult.NewVersion?.ToString(3)}" + _NL +
+                        "Do you want to download the new version?", _appTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        if (updateCheckResult.GitHubRelease is not null)
+                        {
+                            Task.Run(() => DownloadAndRunUpdate());
+                        }
+                        else
+                        {
+                            ShowMessage("Could not get the GitHub release data.");
+                        }
+                    }
+                }));
+            }
         }
 
         private void SetView(ViewType viewType)
@@ -421,15 +453,23 @@ namespace SimpleSendKeys.Forms
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
+            if (_viewType == ViewType.Main && Form.ModifierKeys.HasFlag(Keys.Control))
+            {
+                btnRecSet_Click(sender, e);
+                return;
+            }
+
             if (_viewType == ViewType.Main)
             {
                 SetView(ViewType.Settings);
                 btnSettings.Text = "< Back";
+                toolTips.SetToolTip(btnSettings, string.Empty);
             }
             else
             {
                 SetView(ViewType.Main);
                 btnSettings.Text = "Settings";
+                toolTips.SetToolTip(btnSettings, "Click to go to the settings panel.\r\nCtrl + click to apply the recommended settings.");
             }
         }
 
@@ -440,7 +480,6 @@ namespace SimpleSendKeys.Forms
 
         private void chkRunOnStartup_CheckedChanged(object sender, EventArgs e)
         {
-            if (_updatingUI) { return; }
             Settings.RunOnStartup = chkRunOnStartup.Checked;
             Helpers.SetStartup(active: Settings.RunOnStartup, args: "minimized");
         }
@@ -462,8 +501,9 @@ namespace SimpleSendKeys.Forms
                 Settings.ClipboardSync = false;
                 Settings.MaskText = false;
                 Settings.ClearCbAfterSending = false;
+                Settings.KeepOnTop = false;
                 Settings.DelayBeforeSending = 5;
-                Settings.DelayBetweenChars = 50;
+                Settings.DelayBetweenChars = 25;
                 Settings.HotKey = 45;
                 Settings.ModifierKeys = new();
 
@@ -474,6 +514,12 @@ namespace SimpleSendKeys.Forms
 
         private void btnRecSet_Click(object sender, EventArgs e)
         {
+            if (Settings.RunOnStartup && Settings.MinimizeToTray && Settings.ClipboardSync)
+            {
+                ShowMessage("It looks like you already have the recommended settings applied. Nice! :)");
+                return;
+            }
+
             DialogResult dialogResult = MessageBox.Show(this, "These are the recommended settings:" + _NL +
                 "Run on startup = on" + _NL + "Minimize to tray = on" + _NL + "Clipboard sync = on" + _NL + _NL +
                 "No other setting will be changed. This way, the app will run in the background at startup (accessible via the tray icon) " +
@@ -499,6 +545,23 @@ namespace SimpleSendKeys.Forms
             if (lblStatus.Text.Equals("Idle", StringComparison.OrdinalIgnoreCase))
             { lblStatus.Text = $"Runs: {Settings.AppRuns}, Chars: {Settings.CharsSent}"; }
             else { lblStatus.Text = "Idle"; }
+        }
+
+        private void StatusMouseWheelEvent(object? sender, MouseEventArgs e)
+        {
+            double opacity = this.Opacity;
+            if (e.Delta > 0)
+            {
+                opacity += 0.1d;
+                if (opacity > 1d) { opacity = 1d; }
+                this.Opacity = opacity;
+            }
+            else
+            {
+                opacity -= 0.1d;
+                if (opacity < 0.1) { opacity = 0.1; }
+                this.Opacity = opacity;
+            }
         }
 
         private void lblDBCinfo_Click(object sender, EventArgs e)
@@ -537,6 +600,58 @@ namespace SimpleSendKeys.Forms
         private void lblClear_Click(object sender, EventArgs e)
         {
             if (!Settings.ClipboardSync) { txtPayload.Clear(); }
+        }
+
+        private void lblCheck4Update_Click(object sender, EventArgs e)
+        {
+            UpdateCheckResult updateCheckResult = _check4UpdateGH.Check();
+            if (updateCheckResult.Success)
+            {
+                if (updateCheckResult.NewVersionAvailable)
+                {
+                    lblUpdate.Visible = true;
+                    if (MessageBox.Show(this,
+                        $"There is a new version available: {updateCheckResult.NewVersion?.ToString(3)}" + _NL +
+                        "Do you want to download the new version?", _appTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        if (updateCheckResult.GitHubRelease is not null)
+                        {
+                            Task.Run(() => DownloadAndRunUpdate());
+                        }
+                        else
+                        {
+                            ShowMessage("Could not get the GitHub release data.");
+                        }
+                    }
+                }
+                else
+                {
+                    ShowMessage($"There is no new version available.{_NL}You're using the latest one.");
+                }
+            }
+            else
+            {
+                string details = string.IsNullOrEmpty(updateCheckResult.Message) ? "" : (_NL + updateCheckResult.Message);
+                ShowMessage("The update check failed." + details);
+            }
+        }
+
+        private async Task DownloadAndRunUpdate()
+        {
+            (bool downloadSuccess, string? downloadError) = await _check4UpdateGH.DownloadAsync("setup");
+            if (downloadSuccess) { Application.Exit(); }
+            else { MessageBox.Show("The download failed." + _NL + downloadError, _appTitle, MessageBoxButtons.OK, MessageBoxIcon.Error); }
+        }
+
+        private void lblUpdate_Click(object sender, EventArgs e)
+        {
+            lblCheck4Update_Click(sender, e);
+        }
+
+        private void chkKeepOnTop_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.KeepOnTop = chkKeepOnTop.Checked;
+            this.TopMost = Settings.KeepOnTop;
         }
     }
 }
