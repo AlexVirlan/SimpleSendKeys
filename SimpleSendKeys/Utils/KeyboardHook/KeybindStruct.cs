@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleSendKeys.Utils.KeyboardHook
+﻿namespace SimpleSendKeys.Utils.KeyboardHook
 {
     /// <summary>
     /// A struct to represent a keybind (key + modifiers)
